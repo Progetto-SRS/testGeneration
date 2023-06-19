@@ -1,0 +1,204 @@
+npm install fs path
+
+const fs = require('fs');
+const path = require('path');
+
+collection.save()
+        .then(collection => {
+          const siteDirectory = path.join(__dirname, 'sites', collection._id.toString()); // Directory path for the new site
+          fs.mkdirSync(siteDirectory); // Create the new directory synchronously
+
+
+
+//COMANDI CREAZIONE STORAGE ACC E CONTAINER
+
+
+
+npm install @azure/storage-blob
+
+
+// azureStorage.js
+
+const { BlobServiceClient } = require('@azure/storage-blob');
+
+async function uploadToAzureStorage(containerName, localFilePath, blobName) {
+  // Connessione all'account di Azure Storage
+  const connectionString = '<connection-string>'; // Inserisci la stringa di connessione del tuo account di Azure Storage
+  const blobServiceClient = BlobServiceClient.fromConnectionString(connectionString);
+
+  // Ottenere il riferimento al contenitore (se non esiste, verrà creato)
+  const containerClient = blobServiceClient.getContainerClient(containerName);
+
+  // Creare un riferimento al blob nel contenitore
+  const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+
+  // Caricare il file sul blob
+  await blockBlobClient.uploadFile(localFilePath);
+
+  console.log('File caricato con successo su Azure Storage.');
+}
+
+module.exports = {
+  uploadToAzureStorage
+};
+
+
+
+const { uploadToAzureStorage } = require('./azureStorage');
+
+
+const containerName = 'nome-contenitore';
+const localFilePath = 'percorso/file-da-caricare';
+const blobName = 'nome-blob';
+
+uploadToAzureStorage(containerName, localFilePath, blobName)
+  .then(() => {
+    console.log('Caricamento completato con successo.');
+  })
+  .catch((error) => {
+    console.error('Si è verificato un errore durante il caricamento:', error);
+  });
+
+
+//ALLA FINE CREAZIONE ISTANZA SUL DB E RIMOZIONE DIRECTORY SUL SERVER
+
+Controllo nome URL: https://dev-functions-srs.azurewebsites.net/api/delete-account-storage
+
+
+
+
+
+
+
+
+
+//GENERATION
+
+Per separare il codice dell'API in un file JavaScript a parte e includerlo nel tuo file principale, puoi seguire questi passaggi:
+
+1. Crea un nuovo file JavaScript, ad esempio `openai.js`, nella stessa directory del tuo file principale.
+
+2. Trasferisci la funzione `generateContent` e qualsiasi altro codice relativo all'API di OpenAI nel file `openai.js`. Il contenuto di `openai.js` potrebbe apparire così:
+
+```javascript
+const openai = require('openai');
+
+const OPENAI_API_KEY = 'your_api_key'; // Imposta la tua chiave API di OpenAI
+
+openai.configure({
+  apiKey: OPENAI_API_KEY,
+});
+
+const generateContent = async (prompt) => {
+  try {
+    const gptResponse = await openai.complete({
+      engine: 'davinci',
+      prompt: prompt,
+      maxTokens: 100,
+      n: 1,
+      temperature: 0.7,
+    });
+
+    const generatedText = gptResponse.choices[0].text.trim();
+
+    return generatedText;
+  } catch (error) {
+    console.error('Si è verificato un errore durante la generazione del contenuto:', error);
+    throw error;
+  }
+};
+
+module.exports = {
+  generateContent,
+};
+```
+
+3. Nel tuo file principale, puoi importare il modulo `openai` utilizzando `require`. Aggiungi questa riga all'inizio del tuo file principale, prima della definizione della funzione `generate`:
+
+```javascript
+const openai = require('./openai'); // Assicurati che il percorso sia corretto in base alla posizione dei tuoi file
+
+// Resto del tuo codice...
+```
+
+Ora hai separato il codice relativo all'API di OpenAI in un file a parte e lo hai incluso nel tuo file principale. Puoi chiamare la funzione `openai.generateContent()` nel tuo codice principale come desiderato.
+
+Assicurati di aggiornare eventuali riferimenti al codice relativo all'API di OpenAI nel tuo file principale per utilizzare la nuova struttura.
+
+
+
+//Richiamo funzione
+
+Capisco. Se desideri modificare il contenuto di specifici elementi HTML nel tuo file da modificare, puoi utilizzare un parser HTML per analizzare il file e trovare gli elementi desiderati. Successivamente, puoi generare il testo inventato utilizzando l'API di OpenAI e sostituire i contenuti degli elementi con il testo generato.
+
+Ecco un esempio di come puoi implementarlo:
+
+1. Assicurati di avere installato la libreria `cheerio` nel tuo progetto Node.js. Puoi farlo eseguendo il comando `npm install cheerio`.
+
+2. Nel tuo file principale, aggiungi `const cheerio = require('cheerio');` all'inizio del file per importare la libreria `cheerio`.
+
+3. Dopo aver copiato i file nella cartella `siteDirectory`, puoi utilizzare `cheerio` per analizzare il file HTML e modificare il contenuto degli elementi desiderati. Sostituisci la sezione "GENERAZIONE --TODO" con il seguente codice:
+
+```javascript
+//GENERAZIONE --TODO
+files.forEach(async (file) => {
+  const blobName = file;
+  const filePath = path.resolve(siteDirectory, file);
+
+  // Leggi il contenuto del file HTML
+  const fileContent = fs.readFileSync(filePath, 'utf8');
+
+  // Analizza il contenuto HTML utilizzando cheerio
+  const $ = cheerio.load(fileContent);
+
+  // Esempio: Modifica il nome del prodotto con testo generato
+  const productNameElement = $('.product .product-name');
+  const generatedProductName = await openai.generateContent('Your prompt here');
+  productNameElement.text(generatedProductName);
+
+  // Esempio: Modifica la descrizione del prodotto con testo generato
+  const productDescriptionElement = $('.product .product-description');
+  const generatedProductDescription = await openai.generateContent('Your prompt here');
+  productDescriptionElement.text(generatedProductDescription);
+
+  // Esempio: Modifica il prezzo del prodotto con testo generato
+  const productPriceElement = $('.product .product-price');
+  const generatedProductPrice = await openai.generateContent('Your prompt here');
+  productPriceElement.text(generatedProductPrice);
+
+  // Esempio: Modifica l'immagine del prodotto con un'immagine generata
+  const productImageElement = $('.product .product-image');
+  const generatedProductImageURL = 'https://example.com/generated-image.jpg'; // URL immagine generata
+  productImageElement.attr('src', generatedProductImageURL);
+
+  // Salva il file HTML modificato
+  fs.writeFileSync(filePath, $.html());
+
+  // Carica il file su Azure Storage come hai già implementato
+  uploadToAzureStorage(storageAccountName, containerName, filePath, blobName)
+    .then(() => {
+      console.log('Caricamento completato con successo per:', file);
+      uploadCount++;
+
+      if (uploadCount === files.length && !errorOccurred) {
+        console.log('Caricamento completato per tutti i file.');
+        // Resto del codice per il salvataggio della collezione, rimozione della cartella, ecc.
+      }
+    })
+    .catch((error) => {
+      console.error('Si è verificato un errore durante il caricamento per:', file, error);
+      res.status(500).json({
+        message: 'An error occurred',
+        error: error.message,
+      });
+    });
+});
+```
+
+In questo esempio, stiamo utilizzando `cheerio` per selezionare gli elementi desiderati all'interno del file HTML e modificarne il contenuto utilizzando il testo generato dall'API di OpenAI. Puoi personalizzare il prompt utilizzato per generare il testo e adattarlo alle tue esigenze specifiche.
+
+Ricorda di impostare correttamente il valore `generatedProductImageURL` con l'URL dell'immagine generata che desideri utilizzare.
+
+Assicurati di testare attentamente il codice e adattarlo alle tue esigenze specifiche.
+
+
