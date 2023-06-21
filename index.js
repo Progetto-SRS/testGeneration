@@ -1,4 +1,5 @@
 const openai = require('./openai');
+const googleApi = require('./googleImg')
 const cheerio = require('cheerio');
 const path = require('path');
 const fs = require('fs');
@@ -6,8 +7,110 @@ const fsExtra = require('fs-extra');
 
 const readline = require('readline');
 
+function valutaPertinenza(results) {
+    if (!results || results.length === 0) {
+        return null;
+      }
+  
+      return results[0];
+  }
+  
+
+
+    
+    
+    async function generateImage(query) {
+        try {
+          const results = await googleApi.searchImages(query);
+          console.log("results:", results);
+      
+          // Valuta la pertinenza dei risultati e ottieni l'URL più pertinente
+          const imageUrl = valutaPertinenza(results);
+          console.log("imageUrl:", imageUrl);
+      
+          // Controlla se l'URL dell'immagine è valido e visita il link
+          if (imageUrl) {
+            // Esegui le operazioni desiderate con l'URL dell'immagine
+            // Ad esempio, puoi utilizzarlo per popolare il template dell'immagine nella tua app
+      
+            // Restituisci l'imageUrl per usarlo altrove nella tua app
+            return imageUrl;
+          } else {
+            console.log("Nessun risultato pertinente trovato per la query:", query);
+            return null;
+          }
+        } catch (error) {
+          console.error('Errore durante la ricerca delle immagini:', error);
+          return null;
+        }
+      }
+      
+
 function generateSiteContent(template, directoryPath){
     if (template.charAt(0) ==='1'){    //ID relativo a sito di news
+        fs.readdir(directoryPath, (err, files) => {
+            if (err) {
+                console.log('Errore durante la lettura della directory:', err);
+                return;
+            }
+            files.forEach(async (file)=>{
+                const fileExtension = path.extname(file);
+                const fileName = path.basename(file, fileExtension);
+
+                // Verifica l'estensione e il nome del file
+                if (fileExtension === '.html') {
+                    const filePath = path.resolve(directoryPath, file);
+                    // Leggi il contenuto del file HTML
+                    const fileContent = fs.readFileSync(filePath, 'utf8');
+                    // Analizza il contenuto HTML 
+                    const $ = cheerio.load(fileContent);
+                    if (fileName === 'index') {
+                        const mainArticle = $('#main-article')
+                        const generatedMainArticleName= await openai.generateContent('A title for a main news article')
+                        mainArticle.find('div').text(generatedMainArticleName)
+
+                        const query = `${generatedMainArticleName.split(' ').slice(0, 4).join(' ')}`; // Sostituisci con il nome o il titolo generato dall'altra API
+                            const imgUrl =await generateImage(query)
+                            
+                            if(imgUrl){
+                               
+                                mainArticle.css('background-image', `url(${imgUrl})`)
+
+                            }
+                        //Itero per ogni elemento di id article
+                        const articleIds = ['main-news1', 'main-news2', 'main-news3', 'top-news1', 'top-news2', 'top-news3','latest-news1','latest-news2','latest-news3']; // Aggiungi gli ID dei prodotti desiderati
+
+                        await Promise.all(articleIds.map(async (articleId) => {
+                            const articleElement = $('#' + articleId );
+
+                            const generatedArticleName = await openai.generateContent('A title for a news article');
+                            articleElement.find('div').text(generatedArticleName);
+
+                            
+
+                            const query = `${generatedArticleName.split(' ').slice(0, 4).join(' ')}`; // Sostituisci con il nome o il titolo generato dall'altra API
+                            const imgUrl =await generateImage(query)
+                            
+                            if(imgUrl){
+                               
+                                articleElement.css('background-image', `url(${imgUrl})`)
+
+                            }
+                        }));
+                        
+                        //Sovrascrivo il file con quello modificato
+                        fs.writeFileSync(filePath, $.html());
+                        
+
+                    } 
+                }
+
+
+        
+            })
+
+        })
+        return true
 
     }else if(template.charAt(0) ==='2'){ //ID relativo a sito Blog
         fs.readdir(directoryPath, (err, files) => {
@@ -166,7 +269,21 @@ function generateSiteContent(template, directoryPath){
                             console.log(generatedProductPrice)
                             productElement.find('.price').text(generatedProductPrice);
                             */
+
+                            const query = `${generatedProductName}`; // Sostituisci con il nome o il titolo generato dall'altra API
+                            const imgUrl =await generateImage(query)
+                            
+                            if(imgUrl){
+                                const imgElement = productElement.find($('#prod-img'))
+                                imgElement.css('background-image', `url(${imgUrl})`)
+
+                            }
                         }));
+                        
+
+
+
+
 
                         //Sovrascrivo il file con quello modificato
                         fs.writeFileSync(filePath, $.html());

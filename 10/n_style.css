@@ -7,7 +7,7 @@ body {
   }
   
   header {
-    background-color: #ebebeb;
+    background-color: #455591;
     padding: 13px;
     border-bottom: 2px solid #969696;
   }
@@ -17,10 +17,11 @@ body {
   }
   
   h1 {
-    font-size: 30px;
+    font-size: 42px;
     margin-top: 0;
     margin-left: 10px;
-    font-family: 'News Cycle';
+    font-family: 'Bebas Neue', sans-serif;
+    color: #660c0ced;
   }
   
   nav {
@@ -28,13 +29,12 @@ body {
     
   }
   nav ul{
-    border: 1.5px solid #969696;
     border-radius: 15px;
-    background-color: #dddddd;
+    background-color: #807aa15e;;
     font-size: large;
   }
   span{
-    border-left: 1px solid rgb(192, 192, 192);
+    border-left: 1px solid rgb(192 192 192 / 31%);
   }
   
   ul {
@@ -57,12 +57,12 @@ body {
     padding: 5px 10px;
   }
   a {
-    color: #302e2e;
+    color: #b5c2cd;
     text-decoration: none;
   }
   
   a:hover {
-    color: rgb(112, 110, 110);
+    color: #9dadbb73;
   }
 
   
@@ -94,7 +94,7 @@ body {
   #main-articles li{
     height: 80px;
   }
-  .top-news li{
+  .top-news li, .latest-news li{
     background-image: url('https://d110erj175o600.cloudfront.net/wp-content/uploads/2018/01/fake-news_561811504.jpg.webp');
     background-size: contain;
     background-position: center;
@@ -119,6 +119,8 @@ body {
   .news li {
     padding: 10px 0;
     border-bottom: 1px solid #ccc;
+    background-size: contain;
+    background-position: center;
   }
   
   .news li a {
