@@ -11,7 +11,7 @@ html, body, ul, ol, li, h1, h2, h3, h4, h5, h6, p, pre, code, address, fieldset,
 body {
   font-family: Arial, sans-serif;
   line-height: 1.6;
-  background-image: url('./img/susan-wilkinson-xHpzHUuupEA-unsplash.jpg');
+  background-image: url('./img/drew-beamer-kUHfMW8awpE-unsplash.jpg');
   background-repeat: no-repeat;
   background-size: cover;
 }
@@ -62,6 +62,12 @@ footer {
 }
 
 h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+h3 {
   font-size: 24px;
   margin-bottom: 20px;
   text-align: center;
@@ -144,3 +150,23 @@ form button {
   border-radius: 5px;
   cursor: pointer;
 }
+
+.description {
+  padding: 10px;
+  color: #000000; /* Colore del testo */
+  background-color: hsla(0, 0%, 100%, 0); /* Colore di sfondo */
+  width: fit-content;
+}
+
+.gallery {
+  display: flex; /* Imposta il layout flessibile */
+  align-items: center;
+}
+
+.gallery img {
+  width: 200px; /* Imposta la larghezza desiderata per le immagini */
+  height: 200px; /* Imposta l'altezza desiderata per le immagini */
+  object-fit: cover; /* Imposta il ridimensionamento delle immagini per adattarsi al contenitore */
+  margin-right: 30px; /* Aggiunge uno spazio tra le immagini */
+}
+

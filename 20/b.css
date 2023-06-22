@@ -2,7 +2,7 @@ body {
   margin: 0;
   padding: 0;
   font-family: Arial, sans-serif;
-  background-image: url('./img/leone-venter-VieM9BdZKFo-unsplash.jpg');
+  background-image: url('./img/giorgio-trovato-n4cjanwvGdg-unsplash.jpg');
   background-repeat: no-repeat;
   background-size: cover;
 }
@@ -60,8 +60,24 @@ footer {
 }
 
 .title {
-  background-color: #31313134;
+  background-color: #ffffff00;
   width: fit-content;
 }
+
+.button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #05050528;
+  color: #333333;
+  text-decoration: none;
+  border: none;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.button:hover {
+  background-color: #cccccc;
+}
+
 
 

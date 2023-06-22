@@ -195,15 +195,23 @@ function generateSiteContent(template, directoryPath){
                         const contentElement = $('.content');
 
                         const generatedTitleName = await openai.generateContent('A title for a blog article');
-                           titleElement.text(generatedTitleName);
+                        titleElement.text(generatedTitleName);
 
-                            const generatedPdateName = await openai.generateContent('Publication date of an article dd/mm/yyyy and a name of an author');
-                           pdateElement.text(generatedPdateName);
+                        const query = `${generatedTitleName.split(' ').slice(0, 4).join(' ')}`;
+                        const imgUrl = await generateImage(query);
+                        const i1Element = $("#i1");
+                        
+                        if (imgUrl) {
+                        i1Element.attr('src', imgUrl);
+                        }
 
-                            const generatedContentName = await openai.generateContent(`A blog article matching the title ${generatedTitleName}`);
-                            contentElement.text(generatedContentName);
+                        const generatedPdateName = await openai.generateContent('Publication date of an article dd/mm/yyyy and a name of an author');
+                        pdateElement.text(generatedPdateName);
 
-                            fs.writeFileSync(filePath, $.html());
+                        const generatedContentName = await openai.generateContent(`A blog article matching the title ${generatedTitleName}`);
+                        contentElement.text(generatedContentName);
+
+                        fs.writeFileSync(filePath, $.html());
                     }
 
                     else if (fileName === 'articles') {
@@ -350,13 +358,22 @@ function generateSiteContent(template, directoryPath){
                         const contentElement = $('.content');
                         const nameElement = $('.name');
                         const ptechnoElement = $('.ptechno');
+                        const pnameElement = $('.pname');
                         const descriptionElement = $('.description');
 
-                            const generatedTitleName = await openai.generateContent('A title for an image of a portfolio project');
-                            titleElement.text(generatedTitleName);
-
-                            const generatedContentName = await openai.generateContent();
-                            contentElement.text(generatedContentName);
+                        const generatedTitleName = await openai.generateContent('A title for an image of a portfolio project');
+                        titleElement.text(generatedTitleName);
+                        
+                        const query = `${generatedTitleName.split(' ').slice(0, 4).join(' ')}`;
+                        const imgUrl0 = await generateImage(query);
+                        const ip1Element = $("#ip1");
+                        
+                        if (imgUrl0) {
+                           ip1Element.attr('src', imgUrl0);
+                        }
+                        
+                        const generatedContentName = await openai.generateContent(`A description for "${generatedTitleName}": `);
+                        contentElement.text(generatedContentName);
 
                             const generatedNameName = await openai.generateContent('A name of a person as following Name Surname');
                             nameElement.text(generatedNameName);
@@ -364,7 +381,36 @@ function generateSiteContent(template, directoryPath){
                             const generatedPtechnoName = await openai.generateContent('the technologies used for the realization of the project');
                             ptechnoElement.text(generatedPtechnoName);
 
-                            const generatedDescriptionName = await openai.generateContent('a short description of the images');
+                            const generatedPnameName = await openai.generateContent('A short title for a portfolio project');
+                            pnameElement.text(generatedPnameName);
+
+                            const baseQuery = `${generatedPnameName.split(' ').slice(0, 4).join(' ')}`;
+
+                            const query1 = `${baseQuery} image 1`;
+                            const imgUrl1 = await generateImage(query1);
+                            const i1Element = $("#i1");
+
+                            if (imgUrl1) {
+                                i1Element.attr('src', imgUrl1);
+                            }
+
+                            const query2 = `${baseQuery} image 2`;
+                            const imgUrl2 = await generateImage(query2);
+                            const i2Element = $("#i2");
+
+                            if (imgUrl2) {
+                                i2Element.attr('src', imgUrl2);
+                            }
+
+                            const query3 = `${baseQuery} image 3`;
+                            const imgUrl3 = await generateImage(query3);
+                            const i3Element = $("#i3");
+
+                            if (imgUrl3) {
+                                i3Element.attr('src', imgUrl3);
+                            }
+
+                            const generatedDescriptionName = await openai.generateContent(`A description for the images associated with the title "${generatedPnameName}": `);
                             descriptionElement.text(generatedDescriptionName);
 
 
@@ -415,26 +461,48 @@ function generateSiteContent(template, directoryPath){
                         
                         const selfdescElement = $('.selfdesc');
 
-                        const generatedSelfdescName = await openai.generateContent('A description about a portfolio owner, his skills at work, his passion and his work experiences');
+                        const generatedSelfdescName = await openai.generateContent('A short description about a portfolio owner, his skills at work and his work experiences');
                         selfdescElement.text(generatedSelfdescName);
 
                             fs.writeFileSync(filePath, $.html());
                     }
 
                     else if (fileName === 'works') {
+
+                        const project1Element = $('.project1');
+                        const project2Element = $('.project2');
+                        const desc1Element = $('.desc1');
+                        const desc2Element = $('.desc2');
+
+                        const generatedProject1Name = await openai.generateContent('A title for a portfolio project');
+                        project1Element.text(generatedProject1Name);
+
+                        const query = `${generatedProject1Name.split(' ').slice(0, 4).join(' ')}`;
+                        const imgUrl = await generateImage(query);
+                        const pimg1Element = $("#pimg1");
                         
-                        const articleIds = ['article1', 'article2', 'article3'];
+                        if (imgUrl) {
+                           pimg1Element.attr('src', imgUrl);
+                        }
+
+                        const generatedDesc1Name = await openai.generateContent(`A description for "${generatedProject1Name}": `);
+                        desc1Element.text(generatedDesc1Name);
+
+                        const generatedProject2Name = await openai.generateContent('A title for a project that can be added into a protfolio');
+                        project2Element.text(generatedProject2Name);
+
+                        const query1 = `${generatedProject2Name.split(' ').slice(0, 4).join(' ')}`;
+                        const imgUrl0 = await generateImage(query1);
+                        const pimg2Element = $("#pimg2");
                         
-                        await Promise.all(articleIds.map(async (articleId) => {
-                            const articleElement = $('#' + articleId);
+                        if (imgUrl0) {
+                            pimg2Element.attr('src', imgUrl0);
+                        }
 
-                            const generatedArticleName = await openai.generateContent('An article title');
-                            articleElement.find('.title').text(generatedArticleName);
-
-                            const generatedArticleDescription = await openai.generateContent(`a description for "${generatedArticleName}": `);
-                            articleElement.find('.content').text(generatedArticleDescription);
-
-                        }));
+                        const generatedDesc2Name = await openai.generateContent(`A description for "${generatedProject2Name}": `);
+                        desc2Element.text(generatedDesc2Name);
+                        
+                        
                         //Sovrascrivo il file con quello modificato
                         fs.writeFileSync(filePath, $.html());
                     }
