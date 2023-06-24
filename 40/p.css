@@ -180,11 +180,12 @@ form button {
 .img-cont{
   display: flex;
   justify-content: center;
+  object-fit: fill;
 }
 
 .me-img{
   width: 600px; /* Imposta la larghezza desiderata per le immagini */
-  height: 600px; /* Imposta l'altezza desiderata per le immagini */
+  height: 450px; /* Imposta l'altezza desiderata per le immagini */
   margin-right: auto; 
   margin-left: auto;
 }
