@@ -205,7 +205,7 @@ function generateSiteContent(template, directoryPath){
                         i1Element.attr('src', imgUrl);
                         }
 
-                        const generatedPdateName = await openai.generateContent('Publication date of an article dd/mm/yyyy and a name of an author');
+                        const generatedPdateName = await openai.generateContent('Random publication date of an article dd/mm/2020 and a random name of an author');
                         pdateElement.text(generatedPdateName);
 
                         const generatedContentName = await openai.generateContent(`A blog article matching the title ${generatedTitleName}`);
